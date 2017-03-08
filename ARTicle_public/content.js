@@ -15,6 +15,11 @@ chrome.runtime.onMessage.addListener(function(message) {
     var emotionFear = null;
     var emotionJoy = null;
     var emotionSadness = null;
+    var emotionAngerMinus = null;
+    var emotionDisgustMinus = null;
+    var emotionFearMinus = null;
+    var emotionJoyMinus = null;
+    var emotionSadnessMinus = null;
 
     var select;
     var counter = 0;
@@ -71,21 +76,27 @@ chrome.runtime.onMessage.addListener(function(message) {
 
             emotionAnger = sentimentData.docEmotions.anger;
             emotionAnger = Math.floor(calMapping(emotionAnger, 0.05, 0.7, 0, 100));
+            emotionAngerMinus = Math.floor(calMapping(emotionAnger, 0, 100, 90, 50));
 
             emotionDisgust = sentimentData.docEmotions.disgust;
             emotionDisgust = Math.floor(calMapping(emotionDisgust, 0.05, 0.7, 0, 100));
+            emotionDisgustMinus = Math.floor(calMapping(emotionDisgust, 0, 100, 90, 50));
 
             emotionFear = sentimentData.docEmotions.fear;
             emotionFear = Math.floor(calMapping(emotionFear, 0.05, 0.7, 0, 100));
+            emotionFearMinus = Math.floor(calMapping(emotionFear, 0, 100, 90, 50));
 
             emotionJoy = sentimentData.docEmotions.joy;
             emotionJoy = Math.floor(calMapping(emotionJoy, 0.05, 0.7, 0, 100));
+            emotionJoyMinus = Math.floor(calMapping(emotionJoy, 0, 100, 90, 50));
 
             emotionSadness = sentimentData.docEmotions.sadness;
             emotionSadness = Math.floor(calMapping(emotionSadness, 0.05, 0.7, 0, 100));
+            emotionSadnessMinus = Math.floor(calMapping(emotionSadness, 0, 100, 90, 50));
 
             console.log(typeOfSentiment, scoreOfSentiment);
             console.log(emotionAnger, emotionDisgust, emotionFear, emotionJoy, emotionSadness);
+            console.log(emotionAngerMinus, emotionDisgustMinus, emotionFearMinus, emotionJoyMinus, emotionSadnessMinus);
 
         }, function(err) {});
 
@@ -93,7 +104,7 @@ chrome.runtime.onMessage.addListener(function(message) {
             return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
         }
 
-        setTimeout(displayKeyword, 200);
+        setTimeout(displayKeyword, 1000);
     }
 
     // display words and the result of analysis with color variations
@@ -114,15 +125,14 @@ chrome.runtime.onMessage.addListener(function(message) {
         $('head').children().remove();
 
         // background color : sentiment of article (negative or positive)
-        document.body.style.backgroundColor = 'hsl(' + scoreOfSentiment + ', 80%, 80%)';
+        document.body.style.backgroundColor = "hsl(" + scoreOfSentiment + ", 80%, 80%)";
 
-        // shuffling words with gradient color (5 emotional state)
+        // shuffling words with gradient color (5 emotional states)
         var displayWord = document.createElement('h1');
         displayWord.setAttribute('id', 'displayWord');
         displayWord.setAttribute("style", "-webkit-background-clip:text");
         // anger : 10, disgust : 35, fear : 260, joy: 60, sandess: 220
-        displayWord.style.backgroundImage = "-webkit-linear-gradient(left, hsl(10, " + emotionAnger + "%, 70%) 25%, hsl(35, " + emotionDisgust + "%, 70%) 40%, hsl(260, " + emotionFear + "%, 70%) 60%, hsl(60, " + emotionJoy + "%, 70%) 80%, hsl(220, " + emotionSadness + "%, 70%) 95%)";
-        // displayWord.style.backgroundImage = "-webkit-linear-gradient(left, hsl(5, " + emotionAnger + "%, " + scoreOfSentiment + "%) 33%, hsl(70, " + emotionJoy + "%, " + scoreOfSentiment + "%) 66%, hsl(220, " + emotionSadness + "%, " + scoreOfSentiment + "%) 100%)";
+        displayWord.style.backgroundImage = "-webkit-linear-gradient(left, hsl(10, " + emotionAnger + "%, " + emotionAngerMinus + "%) 25%, hsl(35, " + emotionDisgust + "%, " + emotionDisgustMinus + "%) 40%, hsl(260, " + emotionFear + "%, " + emotionFearMinus + "%) 60%, hsl(60, " + emotionJoy + "%, " + emotionJoyMinus + "%) 80%, hsl(220, " + emotionSadness + "%, " + emotionSadnessMinus + "%) 95%)";
 
         var link = document.createElement('link');
         link.href = 'https://fonts.googleapis.com/css?family=Alfa+Slab+One|Heebo:900';
